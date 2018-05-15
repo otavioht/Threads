@@ -5,19 +5,19 @@ import java.util.List;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class Cliente  extends Thread {
+public class Cliente  implements Runnable {
 
     private static final AtomicInteger idGenerator = new AtomicInteger();
 
     private final int id;
 
-    private final List Fila;;
+    private final SaladeEspera Fila;;
 
     private final SynchronousQueue<Boolean> synchronousQueue;
 
     private volatile boolean atendido;
 
-    public Cliente(List Fila) {
+    public Cliente(SaladeEspera Fila) {
         this.id = idGenerator.incrementAndGet();
         this.Fila = Fila;
         this.synchronousQueue = new SynchronousQueue<>();
@@ -25,10 +25,9 @@ public class Cliente  extends Thread {
 
 
     public void run() {
-        Iterator<Cliente> espera = Fila.iterator();
         try {
-            espera.remove();
-            System.out.println("Cliente " + this + " wait to be called and shaved");
+            Fila.sentaAe(this);
+            System.out.println("Cliente " + this + " esperando ser chamado");
             esperaPraSerAtendido();
 
             atendido= true;

@@ -13,20 +13,31 @@ import static java.util.stream.Collectors.toList;
 
 
 public class Main4 {
-    public static List<Cliente> Fila = Collections.synchronizedList(new ArrayList<Cliente>(15));
+    //public static List<Cliente> Fila = Collections.synchronizedList(new ArrayList<Cliente>(15));
 
     public static void main(String[] args) throws InterruptedException {
+        SaladeEspera esperadoido = new SaladeEspera(15);
 
-        Barbeiro onlyone = new Barbeiro(Fila);
+        ExecutorService executorService = Executors.newFixedThreadPool(4);
+        executorService.submit(new Barbeiro(esperadoido));
 
-        List<Cliente> clientes = Stream.generate(() -> new Cliente(Fila))
+        List<Cliente> clientes = Stream.generate(() -> new Cliente(esperadoido))
                 .limit(100)
+                .peek(executorService::submit)
                 .collect(toList());
+        //TioChico.run();
+       /*List<Cliente> clientes = new ArrayList<Cliente>(100);
 
-        while (!clientes.stream().allMatch(Cliente::foiAtendido)) {
+        for(int i =0 ; i < 100; i++) {
+            clientes.add(new Cliente(esperadoido));
+        }
+*/
+
+        while(!clientes.stream().allMatch(Cliente::foiAtendido)){
             TimeUnit.SECONDS.sleep(1);
         }
 
-        System.out.println("Todos os Clientes");
+        System.out.println("Todos os Clientes foram atendidos");
     }
 }
+

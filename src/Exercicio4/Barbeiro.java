@@ -4,21 +4,23 @@ package Exercicio4;
 import java.util.Iterator;
 import java.util.List;
 
-public class Barbeiro extends Thread {{
+public class Barbeiro implements Runnable {
 
-   private final List Fila;
+   private final SaladeEspera Fila;
 
-    public Barbeiro(List Fila){
-        this.Fila = Fila;
+    public Barbeiro(SaladeEspera fila){
+        this.Fila = fila;
+    }
+    public void start() {
+        this.start();
     }
 
     @Override
-    public synchronized void run(){
+    public void run(){
         try {
-            Iterator<Cliente> espera = Fila.iterator();
-            while (espera.hasNext()) {
-                Cliente Cadeira = espera.next();
-                System.out.println("Proximo Cliente da Fila" + Cadeira);
+            while (true) {
+                Cliente Cadeira = Fila.proximoCliente();
+                System.out.println("Proximo Cliente da Fila -- " +"Cliente de ID: " +Cadeira);
                 Cadeira.ChamadoPraCadeira();
             }
 
@@ -26,10 +28,4 @@ public class Barbeiro extends Thread {{
             System.out.println("Barbeiro terminou de atender");
         }
     }
-}
-
-    //public Barbeiro(List<Cliente> fila) {
-    //this.fila=fila;
-    //}
-
 }
